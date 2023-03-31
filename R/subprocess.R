@@ -199,14 +199,15 @@ load_private_package <- function(package, reg_prefix = "",
 
   pkg_dir0 <- normalizePath(file.path(lib, package))
   mkdirp(pkg_dir <- file.path(tempfile(), package))
-  on_quit(unlink(pkg_dir, recursive = TRUE))
-
   pkg_dir <- normalizePath(pkg_dir)
   file.copy(pkg_dir0, dirname(pkg_dir), recursive = TRUE)
   pkg_env[[".packageName"]] <- package
   pkg_env[["__pkg-dir__"]] <- pkg_dir
 
+  on_quit(system2("say", "BAR"))
+
   reg.finalizer(pkg_env, onexit = TRUE, function(x) {
+    system2("say", "FOO")
     tryCatch({
       pkg_dir <- pkg_env[["__pkg-dir__"]]
       if (!is.null(pkg_dir)) pkg_dir <- suppressWarnings(normalizePath(pkg_dir))
@@ -222,6 +223,7 @@ load_private_package <- function(package, reg_prefix = "",
         .dynLibs(libs[!matchidx])
       }
       unlink(dirname(pkg_dir), recursive = TRUE, force = TRUE)
+      system2("say", "QUX")
     }, error = function(e) e)
   })
 
