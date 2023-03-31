@@ -196,8 +196,11 @@ load_private_package <- function(package, reg_prefix = "",
   if (!file.exists(file.path(lib, package))) {
     stop("Cannot load ", package, " from the private library")
   }
+
   pkg_dir0 <- normalizePath(file.path(lib, package))
   mkdirp(pkg_dir <- file.path(tempfile(), package))
+  on_quit(unlink(pkg_dir, recursive = TRUE))
+
   pkg_dir <- normalizePath(pkg_dir)
   file.copy(pkg_dir0, dirname(pkg_dir), recursive = TRUE)
   pkg_env[[".packageName"]] <- package

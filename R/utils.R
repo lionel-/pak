@@ -314,3 +314,7 @@ rbind_expand <- function(..., .list = list()) {
 
   do.call(rbind, data)
 }
+
+on_quit <- function(expr) {
+  reg.finalizer(globalenv(), function(...) expr, onexit = TRUE)
+}
